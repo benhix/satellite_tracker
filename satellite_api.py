@@ -8,12 +8,13 @@ g = geocoder.ip('me')
 
 observer_lat = g.latlng[0]
 observer_long = g.latlng[1]
-iss_id = '25544'
+altitude = '0'
+seconds = '1'
 
 
 def get_satellite_position(sat_id, lat, long):
     api_key = "DFCSDG-RXT46V-EQXF6C-56H2"
-    url = f"https://api.n2yo.com/rest/v1/satellite/positions/{sat_id}/{lat}/{long}/0/2/&apiKey={api_key}"
+    url = f"https://api.n2yo.com/rest/v1/satellite/positions/{sat_id}/{lat}/{long}/{altitude}/{seconds}/&apiKey={api_key}"
     response = requests.get(url)
 
     if response.status_code == 200:
