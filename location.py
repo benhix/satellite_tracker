@@ -2,8 +2,7 @@ import cv2
 from PySide6.QtGui import QImage, QPixmap
 
 def draw_on_map(lat, long):
-    # Load map
-    world_map = cv2.imread('assets/map_resize.jpg')
+    world_map = cv2.imread('assets/map_2_1.jpg')
     height, width, _ = world_map.shape
 
     # Calc x and y
@@ -11,7 +10,7 @@ def draw_on_map(lat, long):
     y = int((90 - lat) * (height / 180))
 
     # Draw dot on map
-    point_size = 10
+    point_size = 15
     cv2.circle(world_map, (x, y), point_size, (0, 0, 255), -1)
 
     # Convert the OpenCV image to QPixmap
