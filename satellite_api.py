@@ -1,7 +1,6 @@
 import requests
 import geocoder
 import json
-import urllib
 
 # Get current location
 g = geocoder.ip('me')
