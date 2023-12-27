@@ -21,5 +21,3 @@ def get_satellite_position(sat_id, lat, long):
         satellite_data = response.json()
         json.dumps(satellite_data, indent=4)
         return satellite_data
-    
-# get_satellite_position(iss_id, observer_lat, observer_long)

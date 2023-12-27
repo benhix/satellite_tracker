@@ -4,7 +4,6 @@ from PySide6.QtGui import QPixmap, QFont
 from PySide6.QtCore import Slot, Qt
 import satellite_api
 from location import draw_on_map
-from time import sleep
 from live_track import TrackerWorker
 
 # Get current location
@@ -12,7 +11,6 @@ g = geocoder.ip('me')
 
 observer_lat = g.latlng[0]
 observer_long = g.latlng[1]
-iss_id = '25544'
 
 class MainWindow(QMainWindow):
     def __init__(self):
