@@ -1,7 +1,7 @@
 import geocoder
 from PySide6.QtWidgets import QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QLineEdit, QCheckBox
 from PySide6.QtGui import QPixmap, QFont
-from PySide6.QtCore import Slot
+from PySide6.QtCore import Slot, Qt
 import satellite_api
 from location import draw_on_map
 from time import sleep
@@ -28,8 +28,9 @@ class MainWindow(QMainWindow):
         # Background label
         self.background = QLabel(self)
         self.background.setGeometry(0, 0, 1920, 1080)
-        self.bg_img = QPixmap('assets/star_background2.jpg')
+        self.bg_img = QPixmap('assets/white_bg.png')
         self.background.setStyleSheet("border: none;")
+        self.background.setPixmap(self.bg_img)
 
         # Map
         self.world_map = QLabel(self)
@@ -38,31 +39,33 @@ class MainWindow(QMainWindow):
         self.world_map.setPixmap(self.pic)
 
         # Output text box
-        self.right_box = QLabel(self)
-        self.right_box.setGeometry(0, 840, 1734, 200)
-        self.right_box.setStyleSheet("color: black;")
-
+        self.output_label = QLabel(self)
+        self.output_label.setGeometry(0, 840, 1734, 200)
+        self.output_label.setStyleSheet("color: black;")
         font = QFont('New York', 18)
-        #font.setPointSize(15)
-        self.right_box.setFont(font)
+        self.output_label.setFont(font)
         
         # Search Button
         self.confirm_button = QPushButton('Search', self)
-        self.confirm_button.setGeometry(1738, 180, 180, 50)
+        self.confirm_button.setGeometry(1738, 380, 180, 50)
         self.confirm_button.clicked.connect(self.on_click_update_map)
 
         # Live Track Button
         self.live_track_button = QPushButton('Live Track', self)
-        self.live_track_button.setGeometry(1738, 250, 180, 50)
+        self.live_track_button.setGeometry(1738, 450, 180, 50)
         self.live_track_button.clicked.connect(self.on_click_live_track)
 
         # Norad ID text edit
         self.norad_id = QLineEdit(self)
-        self.norad_id.setGeometry(1738, 120, 180, 50)
+        self.norad_id.setGeometry(1738, 320, 180, 50)
         self.norad_id.setPlaceholderText("NORAD ID")
 
         # Link to NORAD ID list
-        
+        self.norad_link = QLabel(self)
+        self.norad_link.setGeometry(1738, 250, 180, 50)
+        self.norad_link.setText('<a href="https://www.n2yo.com/database/" style="color: black; font-size: 22px;">NORAD ID Link</a>')
+        self.norad_link.setOpenExternalLinks(True)
+        self.norad_link.setAlignment(Qt.AlignCenter)
 
         # Checkbox for live track
         self.live_track = QCheckBox()
@@ -86,10 +89,10 @@ class MainWindow(QMainWindow):
             # Prepare the satellite information string
             satellite_str = f"   Name: {data['info']['satname']}"
             for position in data['positions']:
-                satellite_str += f"\n   Latitude: {position['satlatitude']}   Longitude: {position['satlongitude']}\n"
+                satellite_str += f"\n   Latitude: {position['satlatitude']}   Longitude: {position['satlongitude']}\n   Altitude: {position['sataltitude']}km"
 
             # Update the satellite information label
-            self.right_box.setText(satellite_str)
+            self.output_label.setText(satellite_str)
 
             # Draw satellite on map and update
             new_map_pixmap = draw_on_map(sat_lat, sat_long) 
@@ -122,10 +125,11 @@ class MainWindow(QMainWindow):
             # Prepare the satellite information string
             satellite_str = f"   Name: {data['info']['satname']}"
             for position in data['positions']:
-                satellite_str += f"\n   Latitude: {position['satlatitude']}   Longitude: {position['satlongitude']}\n"
+                satellite_str += f"\n   Latitude: {position['satlatitude']}   Longitude: {position['satlongitude']}\n   Altitude: {position['sataltitude']}km"
+
 
             # Update the satellite information label
-            self.right_box.setText(satellite_str)
+            self.output_label.setText(satellite_str)
 
             # Draw satellite on map and update
             new_map_pixmap = draw_on_map(sat_lat, sat_long)
