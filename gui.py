@@ -49,21 +49,24 @@ class MainWindow(QMainWindow):
         self.confirm_button = QPushButton('Search', self)
         self.confirm_button.setGeometry(1738, 380, 180, 50)
         self.confirm_button.clicked.connect(self.on_click_update_map)
+        self.confirm_button.setStyleSheet('font-size: 22px;')
 
         # Live Track Button
         self.live_track_button = QPushButton('Live Track', self)
         self.live_track_button.setGeometry(1738, 450, 180, 50)
         self.live_track_button.clicked.connect(self.on_click_live_track)
+        self.live_track_button.setStyleSheet('font-size: 22px;')
 
         # Norad ID text edit
         self.norad_id = QLineEdit(self)
         self.norad_id.setGeometry(1738, 320, 180, 50)
         self.norad_id.setPlaceholderText("NORAD ID")
+        self.norad_id.setStyleSheet('font-size: 20px;')
 
         # Link to NORAD ID list
         self.norad_link = QLabel(self)
-        self.norad_link.setGeometry(1738, 250, 180, 50)
-        self.norad_link.setText('<a href="https://www.n2yo.com/database/" style="color: black; font-size: 22px;">NORAD ID Link</a>')
+        self.norad_link.setGeometry(1730, 250, 180, 50)
+        self.norad_link.setText('<a href="https://www.n2yo.com/database/" style="color: black; font-size: 26px;">NORAD ID Link</a>')
         self.norad_link.setOpenExternalLinks(True)
         self.norad_link.setAlignment(Qt.AlignCenter)
 
