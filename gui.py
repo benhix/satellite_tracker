@@ -1,5 +1,5 @@
 import geocoder
-from PySide6.QtWidgets import QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QLineEdit, QCheckBox
+from PySide6.QtWidgets import QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QLineEdit, QCheckBox, QTableWidget, QTableWidgetItem
 from PySide6.QtGui import QPixmap, QFont
 from PySide6.QtCore import Slot, Qt
 import satellite_api
@@ -35,13 +35,6 @@ class MainWindow(QMainWindow):
         self.world_map.setGeometry(0, -2, 1732, 866)
         self.pic = QPixmap('assets/map_2_1.jpg')
         self.world_map.setPixmap(self.pic)
-
-        # Output text box
-        self.output_label = QLabel(self)
-        self.output_label.setGeometry(0, 840, 1734, 200)
-        self.output_label.setStyleSheet("color: black;")
-        font = QFont('New York', 18)
-        self.output_label.setFont(font)
         
         # Search Button
         self.confirm_button = QPushButton('Search', self)
@@ -67,11 +60,37 @@ class MainWindow(QMainWindow):
         self.norad_link.setText('<a href="https://www.n2yo.com/database/" style="color: black; font-size: 26px;">NORAD ID Link</a>')
         self.norad_link.setOpenExternalLinks(True)
         self.norad_link.setAlignment(Qt.AlignCenter)
-
-        # Checkbox for live track
-        self.live_track = QCheckBox()
-        self.live_track.setGeometry(900, 100, 10, 10)
         
+        # Table
+        self.table = QTableWidget(self)
+        self.table.setRowCount(1)
+        self.table.setColumnCount(6)
+        self.table.setHorizontalHeaderLabels(["Name", "Latitude", "Longitude", "Altitude", "Azimuth", "Elevation"])
+        self.table.setGeometry(0, 860, 1732, 100)
+        self.table.setStyleSheet("font-size: 20px;")
+        # Set row height and column width
+        row_height = 60  
+        self.table.setRowHeight(0, row_height)  # Set the height of the first row
+        # Set column widths
+        col_widths = [285, 285, 285, 285, 285, 285]  # Example widths in pixels for each column
+        for i, width in enumerate(col_widths):
+            self.table.setColumnWidth(i, width)
+
+        
+    def update_table(self, data):
+        # Clear existing data
+        self.table.clearContents()
+
+        # Get the first position as an example
+        first_position = data['positions'][0] if data['positions'] else None
+        if first_position:
+            # Update table
+            self.table.setItem(0, 0, QTableWidgetItem(data['info']['satname']))
+            self.table.setItem(0, 1, QTableWidgetItem(str(first_position['satlatitude'])))
+            self.table.setItem(0, 2, QTableWidgetItem(str(first_position['satlongitude'])))
+            self.table.setItem(0, 3, QTableWidgetItem(f"{first_position['sataltitude']} km"))
+            self.table.setItem(0, 4, QTableWidgetItem(str(first_position['azimuth'])))
+            self.table.setItem(0, 5, QTableWidgetItem(str(first_position['elevation'])))
 
     def on_click_update_map(self):
         # Stop any existing thread
@@ -82,18 +101,12 @@ class MainWindow(QMainWindow):
         self.iss_id = self.norad_id.text()
         data = satellite_api.get_satellite_position(self.iss_id, observer_lat, observer_long)
 
+        self.update_table(data)
+
         first_position = data['positions'][0] if data['positions'] else None
         if first_position:
             sat_lat = first_position['satlatitude']
             sat_long = first_position['satlongitude']
-
-            # Prepare the satellite information string
-            satellite_str = f"   Name: {data['info']['satname']}"
-            for position in data['positions']:
-                satellite_str += f"\n   Latitude: {position['satlatitude']}   Longitude: {position['satlongitude']}\n   Altitude: {position['sataltitude']}km"
-
-            # Update the satellite information label
-            self.output_label.setText(satellite_str)
 
             # Draw satellite on map and update
             new_map_pixmap = draw_on_map(sat_lat, sat_long) 
@@ -123,20 +136,15 @@ class MainWindow(QMainWindow):
             sat_lat = first_position['satlatitude']
             sat_long = first_position['satlongitude']
 
-            # Prepare the satellite information string
-            satellite_str = f"   Name: {data['info']['satname']}"
-            for position in data['positions']:
-                satellite_str += f"\n   Latitude: {position['satlatitude']}   Longitude: {position['satlongitude']}\n   Altitude: {position['sataltitude']}km"
-
-
-            # Update the satellite information label
-            self.output_label.setText(satellite_str)
+            self.update_table(data)
 
             # Draw satellite on map and update
             new_map_pixmap = draw_on_map(sat_lat, sat_long)
             self.world_map.setPixmap(new_map_pixmap)
         else:
             print("No position data available.")
+
+        
 
     def closeEvent(self, event):
         # Stop the tracker thread safely before closing the window
