@@ -1,8 +1,10 @@
 import cv2
 from PySide6.QtGui import QImage, QPixmap
 
+MAP_PATH = 'assets/map_2_1.jpg'
+
 def draw_on_map(lat, long):
-    world_map = cv2.imread('assets/map_2_1.jpg')
+    world_map = cv2.imread(MAP_PATH)
     height, width, _ = world_map.shape
 
     # Calc x and y
