@@ -6,9 +6,12 @@ import satellite_api
 from location import draw_on_map
 from live_track import TrackerWorker
 
+BACKGROUND_PATH = 'assets/white_bg.png'
+MAP_PATH = 'assets/map_2_1.jpg'
+
+
 # Get current location
 g = geocoder.ip('me')
-
 observer_lat = g.latlng[0]
 observer_long = g.latlng[1]
 
@@ -26,14 +29,14 @@ class MainWindow(QMainWindow):
         # Background label
         self.background = QLabel(self)
         self.background.setGeometry(0, 0, 1920, 1080)
-        self.bg_img = QPixmap('assets/white_bg.png')
+        self.bg_img = QPixmap(BACKGROUND_PATH)
         self.background.setStyleSheet("border: none;")
         self.background.setPixmap(self.bg_img)
 
         # Map
         self.world_map = QLabel(self)
         self.world_map.setGeometry(0, -2, 1732, 866)
-        self.pic = QPixmap('assets/map_2_1.jpg')
+        self.pic = QPixmap(MAP_PATH)
         self.world_map.setPixmap(self.pic)
         
         # Search Button
